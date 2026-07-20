@@ -1,0 +1,24 @@
+{
+  "title": "霓虹疾跑",
+  "bpm": 138,
+  "lead_in_seconds": 0.45,
+  "notes": [
+    {"pitch": 64, "beat": 0, "duration": 0.5},
+    {"pitch": 67, "beat": 0.5, "duration": 0.5},
+    {"pitch": 69, "beat": 1, "duration": 0.5},
+    {"pitch": 71, "beat": 1.5, "duration": 0.5},
+    {"pitch": 72, "beat": 2, "duration": 1},
+    {"pitch": 71, "beat": 3, "duration": 0.5},
+    {"pitch": 69, "beat": 3.5, "duration": 0.5},
+    {"pitch": 67, "beat": 4, "duration": 1},
+    {"pitch": 64, "beat": 5, "duration": 0.5},
+    {"pitch": 67, "beat": 5.5, "duration": 0.5},
+    {"pitch": 72, "beat": 6, "duration": 1},
+    {"pitch": 76, "beat": 7, "duration": 1},
+    {"pitch": 74, "beat": 8, "duration": 0.5},
+    {"pitch": 72, "beat": 8.5, "duration": 0.5},
+    {"pitch": 71, "beat": 9, "duration": 0.5},
+    {"pitch": 69, "beat": 9.5, "duration": 0.5},
+    {"pitch": 67, "beat": 10, "duration": 2}
+  ]
+}

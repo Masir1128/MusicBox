@@ -1,0 +1,20 @@
+{
+  "title": "月面漂流",
+  "bpm": 84,
+  "lead_in_seconds": 0.7,
+  "notes": [
+    {"pitch": 57, "beat": 0, "duration": 1.5},
+    {"pitch": 60, "beat": 1.5, "duration": 0.5},
+    {"pitch": 64, "beat": 2, "duration": 2},
+    {"pitch": 62, "beat": 4, "duration": 1},
+    {"pitch": 60, "beat": 5, "duration": 1},
+    {"pitch": 55, "beat": 6, "duration": 2},
+    {"pitch": 57, "beat": 8, "duration": 1},
+    {"pitch": 60, "beat": 9, "duration": 1},
+    {"pitch": 64, "beat": 10, "duration": 1.5},
+    {"pitch": 67, "beat": 11.5, "duration": 0.5},
+    {"pitch": 65, "beat": 12, "duration": 1},
+    {"pitch": 64, "beat": 13, "duration": 1},
+    {"pitch": 60, "beat": 14, "duration": 2}
+  ]
+}
