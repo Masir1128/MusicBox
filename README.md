@@ -14,18 +14,16 @@
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/screenshots/creator-workspace.png" alt="ORBITONE 完整创作工作台"></td>
-    <td width="50%"><img src="docs/screenshots/square-maze-preview.png" alt="方块迷宫拖尾与碰撞效果"></td>
+    <td width="33.33%"><img src="docs/social/ORBITONE-朋友圈-01-音乐可编辑.png" alt="ORBITONE 音乐编辑功能"></td>
+    <td width="33.33%"><img src="docs/social/ORBITONE-朋友圈-02-赤红方块迷宫.png" alt="ORBITONE 赤红方块迷宫"></td>
+    <td width="33.33%"><img src="docs/social/ORBITONE-朋友圈-03-星空方块迷宫.png" alt="ORBITONE 星空方块迷宫"></td>
   </tr>
   <tr>
-    <td align="center">完整创作工作台与逐歌曲配置</td>
-    <td align="center">方块迷宫、彩带拖尾与碰撞效果</td>
+    <td align="center">音乐波形与时间轴编辑</td>
+    <td align="center">赤红方块迷宫</td>
+    <td align="center">星空方块迷宫</td>
   </tr>
 </table>
-
-![ORBITONE 完整工作流长图](docs/screenshots/full-creator-studio.png)
-
-朋友圈发布素材已整理为三张 4:5 精修图：[查看与下载](docs/social/README.md)。
 
 ## 在线试玩与本地完整版
 
