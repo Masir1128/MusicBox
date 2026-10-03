@@ -1145,7 +1145,10 @@ input:focus-visible {
 .template-preview-orbit i:nth-child(3) { right: 13%; bottom: 29px; transform: rotate(-10deg); background: #ff7bbc; }
 
 .template-preview-kinetic {
-  background: #0b101a url("/kinetic-studio-bg.png") center / cover no-repeat;
+  background-color: #0b101a;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 .template-preview-kinetic::after {

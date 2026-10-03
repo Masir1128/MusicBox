@@ -1,5 +1,6 @@
 import type { MelodyNote } from "./melodyAnalyzer";
 import { drawUniversalImpactEffect, impactLifetime, type UniversalImpactEffect } from "./drawUniversalImpactEffect";
+import { publicAsset } from "./publicAsset";
 
 type SquareMazeStyle = {
   meteorIntensity: number;
@@ -153,9 +154,9 @@ const PALETTES = {
 } as const;
 
 const GENERATED_SKIN_IMAGES: Partial<Record<SquareMazeStyle["mazeSkin"], string>> = {
-  cosmic: "/maze-skins/anime-cosmic-burst.webp",
-  voyage: "/maze-skins/cartoon-ocean-adventure.webp",
-  monster: "/maze-skins/neon-monster-festival.webp",
+  cosmic: publicAsset("/maze-skins/anime-cosmic-burst.webp"),
+  voyage: publicAsset("/maze-skins/cartoon-ocean-adventure.webp"),
+  monster: publicAsset("/maze-skins/neon-monster-festival.webp"),
 };
 
 const generatedSkinCache = new Map<string, HTMLImageElement>();

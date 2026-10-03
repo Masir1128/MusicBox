@@ -1,5 +1,6 @@
 import type { MelodyNote } from "./melodyAnalyzer";
 import { drawUniversalImpactEffect, impactLifetime, type UniversalImpactEffect } from "./drawUniversalImpactEffect";
+import { publicAsset } from "./publicAsset";
 
 type KineticStyle = {
   theme: "nebula" | "aurora" | "solar";
@@ -40,7 +41,7 @@ function ensureBackground() {
   if (backgroundImage || typeof Image === "undefined") return backgroundImage;
   backgroundImage = new Image();
   backgroundImage.decoding = "async";
-  backgroundImage.src = "/kinetic-studio-bg.png";
+  backgroundImage.src = publicAsset("/kinetic-studio-bg.png");
   return backgroundImage;
 }
 

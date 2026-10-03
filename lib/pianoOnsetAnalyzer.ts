@@ -4,6 +4,7 @@ import type {
   MelodyNote,
   ModelCandidateStatus,
 } from "./melodyAnalyzer";
+import { publicAsset } from "./publicAsset";
 
 type ProgressCallback = (progress: number, stage: string) => void;
 
@@ -186,7 +187,7 @@ export async function refinePianoOnsets(
 ): Promise<AnalysisResult> {
   onProgress?.(0.64, "正在用钢琴起音模型复核漏拍");
   const { BasicPitch } = await import("@spotify/basic-pitch");
-  const model = new BasicPitch("/models/basic-pitch/model.json");
+  const model = new BasicPitch(publicAsset("/models/basic-pitch/model.json"));
   const onsets: number[][] = [];
   await model.evaluateModel(
     resampleMono(buffer),

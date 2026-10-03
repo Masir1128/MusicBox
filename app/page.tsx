@@ -45,6 +45,7 @@ import {
   type SquareColorMode,
   type VisualStyle,
 } from "../lib/renderMusicBox";
+import { publicAsset } from "../lib/publicAsset";
 
 type SampleTrack = {
   name: string;
@@ -61,64 +62,64 @@ const SAMPLE_TRACKS: readonly SampleTrack[] = [
   {
     name: "星光八音盒",
     description: "舒缓 · 单音旋律 · 10s",
-    url: "/samples/starlight.mp3",
-    scoreUrl: "/samples/starlight.json",
+    url: publicAsset("/samples/starlight.mp3"),
+    scoreUrl: publicAsset("/samples/starlight.json"),
     accent: "cyan",
   },
   {
     name: "霓虹疾跑",
     description: "快节奏 · 连续弹跳 · 7s",
-    url: "/samples/neon-run.mp3",
-    scoreUrl: "/samples/neon-run.json",
+    url: publicAsset("/samples/neon-run.mp3"),
+    scoreUrl: publicAsset("/samples/neon-run.json"),
     accent: "pink",
   },
   {
     name: "月面漂流",
     description: "空灵 · 长音组合 · 13s",
-    url: "/samples/moon-drift.mp3",
-    scoreUrl: "/samples/moon-drift.json",
+    url: publicAsset("/samples/moon-drift.mp3"),
+    scoreUrl: publicAsset("/samples/moon-drift.json"),
     accent: "gold",
   },
   {
     name: "夏日副歌",
     description: "原创流行 · 切分旋律 · 13s",
-    url: "/samples/summer-hook.mp3",
-    scoreUrl: "/samples/summer-hook.json",
+    url: publicAsset("/samples/summer-hook.mp3"),
+    scoreUrl: publicAsset("/samples/summer-hook.json"),
     accent: "cyan",
   },
   {
     name: "城市心跳",
     description: "原创流行 · 快速钢琴 · 15s",
-    url: "/samples/city-heartbeat.mp3",
-    scoreUrl: "/samples/city-heartbeat.json",
+    url: publicAsset("/samples/city-heartbeat.mp3"),
+    scoreUrl: publicAsset("/samples/city-heartbeat.json"),
     accent: "pink",
   },
   {
     name: "雨夜告白",
     description: "原创抒情 · 延音钢琴 · 18s",
-    url: "/samples/rain-confession.mp3",
-    scoreUrl: "/samples/rain-confession.json",
+    url: publicAsset("/samples/rain-confession.mp3"),
+    scoreUrl: publicAsset("/samples/rain-confession.json"),
     accent: "gold",
   },
   {
     name: "极速星键",
     description: "原创测试 · 密集钢琴触键 · 11s",
-    url: "/samples/rapid-star-keys.mp3",
-    scoreUrl: "/samples/rapid-star-keys.json",
+    url: publicAsset("/samples/rapid-star-keys.mp3"),
+    scoreUrl: publicAsset("/samples/rapid-star-keys.json"),
     accent: "pink",
   },
   {
     name: "仙途回响",
     description: "原创古风 · 清晰钢琴主旋律 · 19s",
-    url: "/samples/immortal-echo.mp3",
-    scoreUrl: "/samples/immortal-echo.json",
+    url: publicAsset("/samples/immortal-echo.mp3"),
+    scoreUrl: publicAsset("/samples/immortal-echo.json"),
     accent: "gold",
   },
   {
     name: "棱镜急行",
     description: "原创高速切分 · 96 个折返落点 · 21s",
-    url: "/samples/prism-rush.mp3",
-    scoreUrl: "/samples/prism-rush.json",
+    url: publicAsset("/samples/prism-rush.mp3"),
+    scoreUrl: publicAsset("/samples/prism-rush.json"),
     accent: "cyan",
     sourceLabel: "科学羊 / ORBITONE 本地合成",
     usageNote: "原创测试音乐 · 推荐搭配方块迷宫",
@@ -126,8 +127,8 @@ const SAMPLE_TRACKS: readonly SampleTrack[] = [
   {
     name: "折返脉冲",
     description: "原创律动 · 强弱交错 · 25s",
-    url: "/samples/switchback-groove.mp3",
-    scoreUrl: "/samples/switchback-groove.json",
+    url: publicAsset("/samples/switchback-groove.mp3"),
+    scoreUrl: publicAsset("/samples/switchback-groove.json"),
     accent: "pink",
     sourceLabel: "科学羊 / ORBITONE 本地合成",
     usageNote: "原创测试音乐 · 每小节路线节奏不同",
@@ -135,8 +136,8 @@ const SAMPLE_TRACKS: readonly SampleTrack[] = [
   {
     name: "玻璃三连",
     description: "原创三连音 · 玻璃音色 · 24s",
-    url: "/samples/glass-triplets.mp3",
-    scoreUrl: "/samples/glass-triplets.json",
+    url: publicAsset("/samples/glass-triplets.mp3"),
+    scoreUrl: publicAsset("/samples/glass-triplets.json"),
     accent: "gold",
     sourceLabel: "科学羊 / ORBITONE 本地合成",
     usageNote: "原创测试音乐 · 连续弹墙手感",
@@ -2549,7 +2550,7 @@ export default function Home() {
         <div className="brand-lockup">
           {/* The Sites runtime serves this tiny local brand asset directly. */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img className="brand-logo" src="/kexueyang.jpg" alt="科学羊 Logo" width={40} height={40} />
+          <img className="brand-logo" src={publicAsset("/kexueyang.jpg")} alt="科学羊 Logo" width={40} height={40} />
           <div>
             <div className="brand-name">ORBITONE</div>
             <div className="brand-subtitle">星轨音乐盒</div>
@@ -2846,7 +2847,11 @@ export default function Home() {
                   setStage("已切换为机械悬浮版式 · 小球滚出台阶后落下，砸过琴片即点亮");
                 }}
               >
-                <span className="template-preview template-preview-kinetic" aria-hidden="true"><i /><i /><i /></span>
+                <span
+                  className="template-preview template-preview-kinetic"
+                  style={{ backgroundImage: `url("${publicAsset("/kinetic-studio-bg.png")}")` }}
+                  aria-hidden="true"
+                ><i /><i /><i /></span>
                 <b>机械悬浮</b>
                 <small>物理滚落 · 砸后点亮</small>
               </button>
@@ -3063,9 +3068,9 @@ export default function Home() {
                   </button>
                 )}
                 {([
-                  ["cosmic", "热血宇宙", "#07134d", "#ff2dab", "/maze-skins/anime-cosmic-burst.webp"],
-                  ["voyage", "海岛冒险", "#073c63", "#ff9a48", "/maze-skins/cartoon-ocean-adventure.webp"],
-                  ["monster", "霓虹萌兽", "#07144d", "#ca4dff", "/maze-skins/neon-monster-festival.webp"],
+                  ["cosmic", "热血宇宙", "#07134d", "#ff2dab", publicAsset("/maze-skins/anime-cosmic-burst.webp")],
+                  ["voyage", "海岛冒险", "#073c63", "#ff9a48", publicAsset("/maze-skins/cartoon-ocean-adventure.webp")],
+                  ["monster", "霓虹萌兽", "#07144d", "#ca4dff", publicAsset("/maze-skins/neon-monster-festival.webp")],
                   ["crimson", "经典红", "#6c1234", "#ff3a49"],
                   ["midnight", "午夜蓝", "#071329", "#264d82"],
                   ["aurora", "极光青", "#062339", "#19a796"],

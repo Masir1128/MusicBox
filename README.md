@@ -2,7 +2,7 @@
 
 把音乐变成 9:16 弹跳动画：在浏览器本地分析音频、校准节奏点，并用星轨、机械滚落或方块迷宫生成可录制的音乐可视化。
 
-[在线体验](https://orbitone-music-box.cxyaiyang.chatgpt.site) · [提交问题](https://github.com/Masir1128/MusicBox/issues)
+[在线体验](https://masir1128.github.io/MusicBox/) · [提交问题](https://github.com/Masir1128/MusicBox/issues)
 
 ![ORBITONE 星轨音乐盒](public/og.png)
 

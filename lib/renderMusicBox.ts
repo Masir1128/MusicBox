@@ -2,6 +2,7 @@ import type { MelodyNote } from "./melodyAnalyzer";
 import { renderKineticMusicBox } from "./renderKineticMusicBox";
 import { renderSquareMazeMusicBox } from "./renderSquareMazeMusicBox";
 import { drawUniversalImpactEffect, impactLifetime, type UniversalImpactEffect } from "./drawUniversalImpactEffect";
+import { publicAsset } from "./publicAsset";
 
 export type LabelMode = "solfege" | "note" | "symbol";
 export type SceneTheme = "nebula" | "aurora" | "solar";
@@ -687,7 +688,7 @@ let brandLogoImage: HTMLImageElement | null = null;
 function drawBranding(context: CanvasRenderingContext2D, width: number, height: number) {
   if (!brandLogoImage && typeof Image !== "undefined") {
     brandLogoImage = new Image();
-    brandLogoImage.src = "/kexueyang.jpg";
+    brandLogoImage.src = publicAsset("/kexueyang.jpg");
   }
   const size = 32;
   const x = width - 30 - size;
