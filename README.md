@@ -136,7 +136,17 @@ tests/                          构建与产品回归测试
 
 本项目原创代码使用 [MIT License](LICENSE)。
 
-项目使用 Spotify Basic Pitch 及其模型文件；相关内容采用 Apache License 2.0。详见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) 和 [licenses/Apache-2.0.txt](licenses/Apache-2.0.txt)。方块迷宫的视觉方向向 [quasar098/midi-playground](https://github.com/quasar098/midi-playground) 致意；本仓库不包含该项目的音乐文件。
+项目使用 Spotify Basic Pitch 及其模型文件；相关内容采用 Apache License 2.0。详见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) 和 [licenses/Apache-2.0.txt](licenses/Apache-2.0.txt)。
+
+## 致谢与开源参考
+
+ORBITONE 的方块迷宫、MIDI 音符碰撞与弹跳动画的视觉方向，参考并致谢 GitHub 开发者 **[quasar098](https://github.com/quasar098)** 的开源项目 **[midi-playground](https://github.com/quasar098/midi-playground)**。
+
+- 作者主页：https://github.com/quasar098
+- 项目地址：https://github.com/quasar098/midi-playground
+- 原项目许可：GPL-3.0
+- 借鉴范围：方块弹跳、音符碰撞与 MIDI 可视化的整体视觉方向。
+- 本仓库不分发该项目的歌曲、MIDI 文件或捆绑媒体；ORBITONE 当前公开的渲染器与程序化测试音乐由本项目独立维护。
 
 ## 贡献
 

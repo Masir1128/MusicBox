@@ -17,4 +17,4 @@ ORBITONE uses [`mp4-muxer`](https://github.com/Vanilagy/mp4-muxer) for browser-s
 
 ## Visual acknowledgement
 
-The square-bounce visual direction acknowledges [`quasar098/midi-playground`](https://github.com/quasar098/midi-playground), which is licensed under GPL-3.0. ORBITONE does not redistribute that project's songs, MIDI files, or bundled media. The renderer and procedural demo music published here are maintained as ORBITONE source and original generated assets.
+The square-bounce, note-collision, and MIDI-visualization direction acknowledges GitHub developer [`quasar098`](https://github.com/quasar098) and the open-source project [`quasar098/midi-playground`](https://github.com/quasar098/midi-playground), which is licensed under GPL-3.0. ORBITONE does not redistribute that project's songs, MIDI files, or bundled media. The renderer and procedural demo music published here are maintained as ORBITONE source and original generated assets.
