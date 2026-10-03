@@ -65,6 +65,23 @@
 
 这是一个同时使用浏览器音频解码、Canvas 实时渲染、IndexedDB 和视频导出的复杂前端项目。完整测试建议使用最新版 Chrome 或 Safari，开启硬件加速，并在电脑本地运行；低性能设备可先关闭泛光、背景网格和高强度碰撞特效。
 
+### macOS 一键启动与关闭
+
+下载或克隆项目后，可以直接双击：
+
+- `启动 ORBITONE.command`：首次运行自动安装依赖，启动成功后打开 `http://127.0.0.1:3000`。
+- `关闭 ORBITONE.command`：只关闭由启动脚本创建的 ORBITONE 本地服务。
+
+如果 macOS 首次阻止运行，请在 Finder 中右键脚本，选择“打开”；也可以在终端执行一次：
+
+```bash
+chmod +x "启动 ORBITONE.command" "关闭 ORBITONE.command"
+```
+
+运行日志保存在 `.orbitone-runtime/server.log`。
+
+### 终端启动
+
 ```bash
 git clone https://github.com/Masir1128/MusicBox.git
 cd MusicBox
