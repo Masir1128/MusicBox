@@ -25,6 +25,8 @@
 
 ![ORBITONE 完整工作流长图](docs/screenshots/full-creator-studio.png)
 
+朋友圈发布素材已整理为三张 4:5 精修图：[查看与下载](docs/social/README.md)。
+
 ## 在线试玩与本地完整版
 
 | 功能 | 在线轻量试玩 | 本地完整版 |
