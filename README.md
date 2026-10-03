@@ -2,11 +2,41 @@
 
 把音乐变成 9:16 弹跳动画：在浏览器本地分析音频、校准节奏点，并用星轨、机械滚落或方块迷宫生成可录制的音乐可视化。
 
-[在线体验](https://masir1128.github.io/MusicBox/) · [提交问题](https://github.com/Masir1128/MusicBox/issues)
+[在线轻量试玩](https://masir1128.github.io/MusicBox/) · [提交问题](https://github.com/Masir1128/MusicBox/issues)
 
 ![ORBITONE 星轨音乐盒](public/og.png)
 
 > 音频、视频背景和歌曲配置均在浏览器本地处理。项目不会把用户导入的媒体上传到服务器。
+
+> **在线版是轻量试玩，不是完整工作台。** 为保证公共静态站点在普通设备上也能流畅打开，在线版只提供 3 首原创样本、3 套核心动画和精简特效。音乐导入、算法调试、逐歌曲保存、视频背景与高清导出均保留在本仓库的本地完整版中。
+
+## 完整版界面预览
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/creator-workspace.png" alt="ORBITONE 完整创作工作台"></td>
+    <td width="50%"><img src="docs/screenshots/square-maze-preview.png" alt="方块迷宫拖尾与碰撞效果"></td>
+  </tr>
+  <tr>
+    <td align="center">完整创作工作台与逐歌曲配置</td>
+    <td align="center">方块迷宫、彩带拖尾与碰撞效果</td>
+  </tr>
+</table>
+
+![ORBITONE 完整工作流长图](docs/screenshots/full-creator-studio.png)
+
+## 在线试玩与本地完整版
+
+| 功能 | 在线轻量试玩 | 本地完整版 |
+| --- | --- | --- |
+| 原创样本与核心动画 | 3 首、3 套 | 11 首、3 套 |
+| 自定义音乐导入与钢琴触键识别 | — | 支持 |
+| 算法时间轴、人工补点、撤回与缩放 | — | 支持 |
+| 每首歌独立保存全部配置 | — | 支持 |
+| 图片 / 视频背景、完整拖尾与碰撞特效 | 精简效果 | 支持 |
+| 单帧与离线 MP4 导出 | — | 支持 |
+
+在线站点适合快速了解作品；要验证完整算法和创作流程，请按下方步骤在本地运行。
 
 ## 当前开源版本
 
@@ -32,6 +62,8 @@
 ## 本地运行
 
 需要 Node.js `>=22.13.0`。
+
+这是一个同时使用浏览器音频解码、Canvas 实时渲染、IndexedDB 和视频导出的复杂前端项目。完整测试建议使用最新版 Chrome 或 Safari，开启硬件加速，并在电脑本地运行；低性能设备可先关闭泛光、背景网格和高强度碰撞特效。
 
 ```bash
 git clone https://github.com/Masir1128/MusicBox.git

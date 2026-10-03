@@ -31,7 +31,7 @@ test("renders the finished Orbitone creator studio", async () => {
 
 test("keeps long-track and playback fixes in the product source", async () => {
   const [page, styles, analyzer, pianoAnalyzer, synthPiano, localMusicLibrary, creatorSettings, renderer, kineticRenderer, squareMazeRenderer, universalImpactRenderer] = await Promise.all([
-    readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/creator-studio.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
     readFile(new URL("../lib/melodyAnalyzer.ts", import.meta.url), "utf8"),
     readFile(new URL("../lib/pianoOnsetAnalyzer.ts", import.meta.url), "utf8"),

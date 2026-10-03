@@ -35,6 +35,7 @@ jobs:
         env:
           ORBITONE_STATIC_EXPORT: "1"
           NEXT_PUBLIC_BASE_PATH: /MusicBox
+          NEXT_PUBLIC_ONLINE_DEMO: "1"
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
