@@ -40,3 +40,10 @@ next-env.d.ts
 /.wrangler/
 /outputs/
 /work/
+
+# local QA captures and source artwork
+/artifacts/
+/public/maze-skins/*.png
+
+# third-party reference material kept only for local comparison
+/public/samples/square-maze-reference.*

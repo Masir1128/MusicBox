@@ -1,13 +1,7 @@
 {
   "name": "orbitone-music-box",
-  "version": "1.0.0",
-  "description": "在浏览器本地解析钢琴旋律并生成 9:16 弹跳音乐动画",
-  "license": "MIT",
-  "homepage": "https://orbitone-music-box.cxyaiyang.chatgpt.site",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Masir1128/MusicBox.git"
-  },
+  "version": "2.0.0",
+  "private": true,
   "engines": {
     "node": ">=22.13.0"
   },
@@ -20,6 +14,7 @@
   },
   "dependencies": {
     "@spotify/basic-pitch": "^1.0.1",
+    "mp4-muxer": "^5.2.2",
     "next": "16.2.6",
     "react": "19.2.6",
     "react-dom": "19.2.6"

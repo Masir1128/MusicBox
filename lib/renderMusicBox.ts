@@ -1,15 +1,69 @@
 import type { MelodyNote } from "./melodyAnalyzer";
+import { renderKineticMusicBox } from "./renderKineticMusicBox";
+import { renderSquareMazeMusicBox } from "./renderSquareMazeMusicBox";
+import { drawUniversalImpactEffect, impactLifetime, type UniversalImpactEffect } from "./drawUniversalImpactEffect";
 
 export type LabelMode = "solfege" | "note" | "symbol";
 export type SceneTheme = "nebula" | "aurora" | "solar";
-export type ImpactEffect = "firework" | "cartoon" | "neon";
+export type ImpactEffect = "cartoon" | "firework" | "neon" | "explosion" | "shatter" | "lightning" | "prismatic";
+export type LayoutTemplate = "orbit" | "kinetic" | "square-maze";
+export type MazeSkin = "midnight" | "aurora" | "sunset" | "crimson" | "blueprint" | "comic" | "anime" | "candy" | "cyber" | "ink" | "cosmic" | "voyage" | "monster" | "custom";
+export type SquareColorMode = "rainbow" | "red" | "yellow" | "cyan" | "pink" | "violet" | "green" | "orange" | "white" | "custom";
+export type MazeShape = "square" | "circle" | "diamond" | "hexagon" | "star" | "heart" | "note" | "moon" | "sparkle" | "clover" | "droplet";
+export type MazeTrailStyle =
+  | "meteor"
+  | "ribbon"
+  | "comet"
+  | "spark"
+  | "firework"
+  | "aurora"
+  | "prism"
+  | "twist"
+  | "helix"
+  | "dissolve"
+  | "wave";
+export type MazeImpactEffect =
+  | ImpactEffect
+  | "vfx-nova"
+  | "vfx-star"
+  | "vfx-shatter"
+  | "vfx-ripple"
+  | "vfx-confetti"
+  | "vfx-combo";
+export type MazeFillMode = "outline" | "half" | "solid";
 
 export type VisualStyle = {
+  layoutTemplate: LayoutTemplate;
   labelMode: LabelMode;
   theme: SceneTheme;
   meteorIntensity: number;
   impactEffect: ImpactEffect;
   impactIntensity: number;
+  ballSize: number;
+  showSceneText: boolean;
+  showBranding: boolean;
+  mazeSkin: MazeSkin;
+  mazeCustomSkinUrl: string;
+  mazeCustomVideoUrl: string;
+  squareColorMode: SquareColorMode;
+  mazeSquareColor: string;
+  mazeShape: MazeShape;
+  mazeObjectSize: number;
+  mazeEdgeColor: string;
+  mazeTrailColor: string;
+  mazeTrailStyle: MazeTrailStyle;
+  mazeStrokeWidth: number;
+  mazeGlowIntensity: number;
+  mazeFillMode: MazeFillMode;
+  mazeImpactEffect: MazeImpactEffect;
+  mazeTrailLength: number;
+  mazeTrailWidth: number;
+  mazeEffectBpm: number;
+  mazeEffectIntensity: number;
+  mazeBloom: boolean;
+  mazeShake: boolean;
+  mazeHitstop: boolean;
+  mazeBackgroundGrid: boolean;
 };
 
 type Point = { x: number; y: number; pitch: number; index: number };
@@ -438,13 +492,16 @@ function drawImpactEffects(
   style: VisualStyle,
 ) {
   const intensity = clamp(style.impactIntensity / 100, 0, 1);
+  const impactEffect = style.impactEffect;
   const start = Math.max(0, currentIndex - 2);
   const end = Math.min(points.length - 1, currentIndex);
 
   for (let noteIndex = start; noteIndex <= end; noteIndex += 1) {
     const age = time - notes[noteIndex].time;
     const noteGap = localNoteGap(notes, noteIndex);
-    const effectLifetime = clamp(noteGap * 1.65, 0.22, 0.72);
+    const effectLifetime = impactEffect === "cartoon"
+      ? clamp(noteGap * 1.65, 0.22, 0.72)
+      : impactLifetime(impactEffect as UniversalImpactEffect);
     if (age < 0 || age > effectLifetime) continue;
     const progress = age / effectLifetime;
     const densityScale = 0.45 + clamp((noteGap - 0.1) / 0.25, 0, 1) * 0.55;
@@ -455,6 +512,21 @@ function drawImpactEffects(
     const color = PAD_COLORS[noteIndex % PAD_COLORS.length];
     const energy = 0.62 + notes[noteIndex].velocity * 0.7;
     const fade = Math.pow(1 - progress, 1.5);
+
+    if (impactEffect !== "cartoon") {
+      drawUniversalImpactEffect(context, impactEffect, {
+        x,
+        y,
+        age,
+        lifetime: effectLifetime,
+        seed: noteIndex,
+        primary: color,
+        secondary: PAD_COLORS[(noteIndex + 2) % PAD_COLORS.length],
+        intensity: style.impactIntensity,
+        scale: energy,
+      });
+      continue;
+    }
 
     context.save();
     context.globalCompositeOperation = "lighter";
@@ -487,64 +559,22 @@ function drawImpactEffects(
       context.fill();
     }
 
-    if (style.impactEffect === "neon") {
-      context.strokeStyle = color;
-      context.shadowColor = color;
-      context.shadowBlur = 20;
-      context.lineWidth = 3.5 * fade;
-      for (let ring = 0; ring < 3; ring += 1) {
-        context.beginPath();
-        context.arc(x, y, 20 + progress * (70 + ring * 36), 0, Math.PI * 2);
-        context.stroke();
-      }
-      for (let particle = 0; particle < particleCount; particle += 1) {
-        const angle = hash(noteIndex * 31 + particle * 7.3) * Math.PI * 2;
-        const distance = (24 + hash(particle * 4.1) * 92) * progress * energy;
-        context.lineWidth = 1 + hash(particle) * 3;
-        context.beginPath();
-        context.moveTo(x + Math.cos(angle) * distance * 0.55, y + Math.sin(angle) * distance * 0.55);
-        context.lineTo(x + Math.cos(angle) * distance, y + Math.sin(angle) * distance);
-        context.stroke();
-      }
-    } else if (style.impactEffect === "firework") {
-      const colors = [color, "#fff176", "#ff79c6", "#7efcff", "#a98bff"];
-      for (let particle = 0; particle < particleCount; particle += 1) {
-        const angle = hash(noteIndex * 19 + particle * 5.17) * Math.PI * 2;
-        const speed = 65 + hash(particle * 3.8) * 135;
-        const distance = speed * age * energy;
-        const px = x + Math.cos(angle) * distance;
-        const py = y + Math.sin(angle) * distance + age * age * 72;
-        const previousX = x + Math.cos(angle) * Math.max(0, distance - 18);
-        const previousY = y + Math.sin(angle) * Math.max(0, distance - 18) + age * age * 62;
-        context.strokeStyle = `${colors[particle % colors.length]}${Math.round(fade * 255).toString(16).padStart(2, "0")}`;
-        context.lineWidth = 1.5 + hash(particle * 2.4) * 2.5;
-        context.beginPath();
-        context.moveTo(previousX, previousY);
-        context.lineTo(px, py);
-        context.stroke();
-        context.fillStyle = colors[particle % colors.length];
-        context.beginPath();
-        context.arc(px, py, 1.5 + intensity * 2.3, 0, Math.PI * 2);
+    const colors = ["#fff176", "#ff79c6", "#7efcff", "#a98bff", "#ff9f43"];
+    for (let particle = 0; particle < Math.round(particleCount * 0.72); particle += 1) {
+      const angle = hash(noteIndex * 23 + particle * 9.1) * Math.PI * 2;
+      const distance = (38 + hash(particle * 6.7) * 105) * Math.sin(progress * Math.PI * 0.82) * energy;
+      const px = x + Math.cos(angle) * distance;
+      const py = y + Math.sin(angle) * distance - Math.sin(progress * Math.PI) * 28;
+      context.fillStyle = colors[particle % colors.length];
+      if (particle % 3 === 0) {
+        starPath(context, px, py, 7 + intensity * 5, 3 + intensity * 2, age * 5 + particle);
         context.fill();
-      }
-    } else {
-      const colors = ["#fff176", "#ff79c6", "#7efcff", "#a98bff", "#ff9f43"];
-      for (let particle = 0; particle < Math.round(particleCount * 0.72); particle += 1) {
-        const angle = hash(noteIndex * 23 + particle * 9.1) * Math.PI * 2;
-        const distance = (38 + hash(particle * 6.7) * 105) * Math.sin(progress * Math.PI * 0.82) * energy;
-        const px = x + Math.cos(angle) * distance;
-        const py = y + Math.sin(angle) * distance - Math.sin(progress * Math.PI) * 28;
-        context.fillStyle = colors[particle % colors.length];
-        if (particle % 3 === 0) {
-          starPath(context, px, py, 7 + intensity * 5, 3 + intensity * 2, age * 5 + particle);
-          context.fill();
-        } else {
-          context.save();
-          context.translate(px, py);
-          context.rotate(angle + age * 4);
-          context.fillRect(-4, -2, 8 + intensity * 5, 4);
-          context.restore();
-        }
+      } else {
+        context.save();
+        context.translate(px, py);
+        context.rotate(angle + age * 4);
+        context.fillRect(-4, -2, 8 + intensity * 5, 4);
+        context.restore();
       }
     }
     context.restore();
@@ -561,6 +591,7 @@ function drawBall(
   style: VisualStyle,
 ) {
   const palette = PALETTES[style.theme];
+  const ballScale = clamp(style.ballSize / 100, 0.6, 1.6);
   const currentSegment = segmentAt(notes, time);
   const currentGap = localNoteGap(notes, currentSegment.index);
   const trailCount = currentGap < 0.18 ? 4 : 7;
@@ -570,18 +601,25 @@ function drawBall(
     const alpha = (1 - trail / (trailCount + 1)) * 0.18;
     context.fillStyle = `rgba(255,178,89,${alpha})`;
     context.beginPath();
-    context.arc(past.x, past.y, 25 - trail * 1.7, 0, Math.PI * 2);
+    context.arc(past.x, past.y, (25 - trail * 1.7) * ballScale, 0, Math.PI * 2);
     context.fill();
   }
   const ball = ballAt(notes, points, time, height);
   const landingDistance = Math.min(ball.segment.progress, 1 - ball.segment.progress);
   const landing = 1 - smoothstep(clamp(landingDistance / 0.13, 0, 1));
-  const radiusX = 27 + landing * 4;
-  const radiusY = 29 - landing * 6;
+  const radiusX = (27 + landing * 4) * ballScale;
+  const radiusY = (29 - landing * 6) * ballScale;
   context.save();
   context.shadowColor = palette.ballB;
-  context.shadowBlur = 44;
-  const gradient = context.createRadialGradient(ball.x - 9, ball.y - 12, 3, ball.x, ball.y, 36);
+  context.shadowBlur = 44 * ballScale;
+  const gradient = context.createRadialGradient(
+    ball.x - 9 * ballScale,
+    ball.y - 12 * ballScale,
+    3 * ballScale,
+    ball.x,
+    ball.y,
+    36 * ballScale,
+  );
   gradient.addColorStop(0, "#ffffff");
   gradient.addColorStop(0.26, palette.ballA);
   gradient.addColorStop(1, palette.ballB);
@@ -592,7 +630,15 @@ function drawBall(
   context.shadowBlur = 0;
   context.fillStyle = "rgba(255,255,255,.7)";
   context.beginPath();
-  context.ellipse(ball.x - 9, ball.y - 9, 5, 8, -0.7, 0, Math.PI * 2);
+  context.ellipse(
+    ball.x - 9 * ballScale,
+    ball.y - 9 * ballScale,
+    5 * ballScale,
+    8 * ballScale,
+    -0.7,
+    0,
+    Math.PI * 2,
+  );
   context.fill();
   context.restore();
 }
@@ -605,27 +651,23 @@ function drawHud(
   duration: number,
   notes: MelodyNote[],
   currentIndex: number,
+  showSceneText: boolean,
 ) {
   context.save();
-  const topShade = context.createLinearGradient(0, 0, 0, 170);
-  topShade.addColorStop(0, "rgba(2,4,14,.82)");
-  topShade.addColorStop(1, "rgba(2,4,14,0)");
-  context.fillStyle = topShade;
-  context.fillRect(0, 0, width, 180);
-  context.fillStyle = "rgba(255,255,255,.76)";
-  context.font = "600 18px ui-sans-serif, -apple-system, sans-serif";
-  context.textAlign = "left";
-  context.fillText("ORBITONE  ·  MELODY 01", 30, 46);
-  context.fillStyle = "rgba(255,255,255,.38)";
-  context.font = "500 14px ui-monospace, monospace";
-  context.fillText(`${String(currentIndex + 1).padStart(2, "0")} / ${String(notes.length).padStart(2, "0")}`, 30, 72);
-  context.textAlign = "right";
-  context.fillStyle = "rgba(255,255,255,.7)";
-  context.font = "600 15px ui-sans-serif, -apple-system, sans-serif";
-  context.fillText("开发者：科学羊", width - 30, 46);
-  context.fillStyle = "rgba(255,255,255,.34)";
-  context.font = "500 11px ui-sans-serif, -apple-system, sans-serif";
-  context.fillText("来源：科学羊原创实验项目", width - 30, 68);
+  if (showSceneText) {
+    const topShade = context.createLinearGradient(0, 0, 0, 170);
+    topShade.addColorStop(0, "rgba(2,4,14,.82)");
+    topShade.addColorStop(1, "rgba(2,4,14,0)");
+    context.fillStyle = topShade;
+    context.fillRect(0, 0, width, 180);
+    context.fillStyle = "rgba(255,255,255,.96)";
+    context.font = "600 18px ui-sans-serif, -apple-system, sans-serif";
+    context.textAlign = "left";
+    context.fillText("ORBITONE  ·  MELODY 01", 30, 46);
+    context.fillStyle = "rgba(255,255,255,.68)";
+    context.font = "500 14px ui-monospace, monospace";
+    context.fillText(`${String(currentIndex + 1).padStart(2, "0")} / ${String(notes.length).padStart(2, "0")}`, 30, 72);
+  }
 
   const progress = clamp(time / Math.max(0.1, duration), 0, 1);
   context.fillStyle = "rgba(255,255,255,.15)";
@@ -640,6 +682,40 @@ function drawHud(
   context.restore();
 }
 
+let brandLogoImage: HTMLImageElement | null = null;
+
+function drawBranding(context: CanvasRenderingContext2D, width: number, height: number) {
+  if (!brandLogoImage && typeof Image !== "undefined") {
+    brandLogoImage = new Image();
+    brandLogoImage.src = "/kexueyang.jpg";
+  }
+  const size = 32;
+  const x = width - 30 - size;
+  const y = height - 91;
+  context.save();
+  context.globalAlpha = 0.88;
+  context.beginPath();
+  context.arc(x + size / 2, y + size / 2, size / 2, 0, Math.PI * 2);
+  context.clip();
+  if (brandLogoImage?.complete && brandLogoImage.naturalWidth > 0) {
+    context.drawImage(brandLogoImage, x, y, size, size);
+  } else {
+    context.fillStyle = "#0b1222";
+    context.fillRect(x, y, size, size);
+  }
+  context.restore();
+  context.save();
+  context.globalAlpha = 0.8;
+  context.textAlign = "right";
+  context.fillStyle = "rgba(255,255,255,.9)";
+  context.font = "650 10px ui-sans-serif, -apple-system, sans-serif";
+  context.fillText("科学羊", x - 8, y + 14);
+  context.fillStyle = "rgba(255,255,255,.5)";
+  context.font = "600 8px ui-monospace, monospace";
+  context.fillText("ORBITONE", x - 8, y + 27);
+  context.restore();
+}
+
 export function renderMusicBox(
   context: CanvasRenderingContext2D,
   width: number,
@@ -649,17 +725,24 @@ export function renderMusicBox(
   duration: number,
   style: VisualStyle,
 ) {
-  const safeNotes = notes.length
-    ? notes
-    : [{ time: 0, duration: 1, pitch: 60, confidence: 1, velocity: 1 }];
-  const points = createPoints(safeNotes, width);
-  const ball = ballAt(safeNotes, points, time, height);
-  const palette = PALETTES[style.theme];
-  context.clearRect(0, 0, width, height);
-  drawBackground(context, width, height, time, style);
-  drawRail(context, points, ball.cameraY, width, height, ball.segment.index, palette.rail);
-  drawPads(context, safeNotes, points, time, ball.cameraY, width, height, ball.segment.index, style);
-  drawImpactEffects(context, safeNotes, points, time, ball.cameraY, height, ball.segment.index, style);
-  drawBall(context, safeNotes, points, time, width, height, style);
-  drawHud(context, width, height, time, duration, safeNotes, ball.segment.index);
+  if (style.layoutTemplate === "kinetic") {
+    renderKineticMusicBox(context, width, height, time, notes, duration, style);
+  } else if (style.layoutTemplate === "square-maze") {
+    renderSquareMazeMusicBox(context, width, height, time, notes, duration, style);
+  } else {
+    const safeNotes = notes.length
+      ? notes
+      : [{ time: 0, duration: 1, pitch: 60, confidence: 1, velocity: 1 }];
+    const points = createPoints(safeNotes, width);
+    const ball = ballAt(safeNotes, points, time, height);
+    const palette = PALETTES[style.theme];
+    context.clearRect(0, 0, width, height);
+    drawBackground(context, width, height, time, style);
+    drawRail(context, points, ball.cameraY, width, height, ball.segment.index, palette.rail);
+    drawPads(context, safeNotes, points, time, ball.cameraY, width, height, ball.segment.index, style);
+    drawImpactEffects(context, safeNotes, points, time, ball.cameraY, height, ball.segment.index, style);
+    drawBall(context, safeNotes, points, time, width, height, style);
+    drawHud(context, width, height, time, duration, safeNotes, ball.segment.index, style.showSceneText);
+  }
+  if (style.showBranding) drawBranding(context, width, height);
 }

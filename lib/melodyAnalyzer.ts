@@ -285,8 +285,9 @@ function selectPulseFrames(frames: AnalysisFrame[], options: AnalysisOptions): A
   const noveltyFloor = Math.max(1e-8, percentile(positiveNovelty, 0.36));
   const globalFluxFloor = Math.max(1e-7, percentile(fluxValues, 0.3));
   const activeThreshold = Math.max(noiseFloor * 1.32, peakRms * 0.006);
-  const minimumGapBase = options.profile === "piano" ? 0.075 : options.profile === "rhythm" ? 0.12 : 0.09;
-  const minimumGap = Math.max(0.07, minimumGapBase + (1 - sensitivity) * 0.055);
+  const minimumGapBase = options.profile === "piano" ? 0.045 : options.profile === "rhythm" ? 0.12 : 0.09;
+  const minimumGapFloor = options.profile === "piano" ? 0.052 : 0.07;
+  const minimumGap = Math.max(minimumGapFloor, minimumGapBase + (1 - sensitivity) * 0.055);
   const localRadius = Math.max(10, Math.round((TARGET_RATE / ANALYSIS_HOP) * 0.24));
   const adaptiveFlux = fluxValues.map((flux, index) => {
     const baseline = Math.max(globalFluxFloor, localMedian(fluxValues, index, localRadius));
@@ -332,32 +333,45 @@ function selectPulseFrames(frames: AnalysisFrame[], options: AnalysisOptions): A
     if (fluxPeak || energyPeak) candidates.push(frame);
   }
 
-  const trackDuration = Math.max(1, frames.at(-1)?.time ?? 1);
-  const strongPianoDensity = candidates.length / trackDuration;
-  // Fast solo-piano passages can contain a genuine new key every 80–150ms.
-  // Their attacks are visible in piano-band flux even when the sustain pedal
-  // keeps RMS novelty low. Only enable this relaxed second pass after the
-  // conservative pass has already established a dense piano texture; this
-  // avoids turning flute, vocal, and orchestral mixtures into extra landings.
-  const densePianoMode = options.profile === "piano" && strongPianoDensity >= 3.2;
-  if (densePianoMode) {
-    const relaxedFluxFloor = adaptiveFloor * (0.54 + (1 - sensitivity) * 0.3);
-    const relaxedScoreFloor = scoreFloor * (0.7 + (1 - sensitivity) * 0.12);
+  if (options.profile === "piano" && candidates.length) {
+    // A light second strike in a very short "ding-ding" pair often has less
+    // novelty because the first key is still ringing. Recheck only the
+    // 52–180ms window after an already confirmed attack. Restricting the
+    // relaxed rule to this narrow follow-up window prevents sustained piano
+    // harmonics elsewhere in the track from becoming extra landings.
+    const confirmedCandidates = [...candidates];
+    let previousCandidateIndex = -1;
     for (let index = 2; index < scored.length - 2; index += 1) {
       const frame = scored[index];
-      if (frame.rms < activeThreshold) continue;
-      const rapidPianoPeak =
-        adaptiveFlux[index] >= relaxedFluxFloor &&
-        frame.score >= relaxedScoreFloor &&
+      while (
+        previousCandidateIndex + 1 < confirmedCandidates.length &&
+        confirmedCandidates[previousCandidateIndex + 1].time < frame.time
+      ) {
+        previousCandidateIndex += 1;
+      }
+      const previous = confirmedCandidates[previousCandidateIndex];
+      if (!previous) continue;
+      const followUpGap = frame.time - previous.time;
+      if (followUpGap < minimumGap || followUpGap > 0.18) continue;
+      const nearest = candidates.reduce(
+        (distance, candidate) => Math.min(distance, Math.abs(candidate.time - frame.time)),
+        Infinity,
+      );
+      if (nearest < minimumGap) continue;
+      const rapidFollowUp =
+        frame.rms >= activeThreshold &&
+        adaptiveFlux[index] >= adaptiveFloor * 0.72 &&
+        frame.novelty >= noveltyFloor * 0.32 &&
+        frame.score >= scoreFloor * 0.78 &&
         adaptiveFlux[index] > adaptiveFlux[index - 1] &&
         adaptiveFlux[index] >= adaptiveFlux[index + 1] &&
         adaptiveFlux[index] >= adaptiveFlux[index - 2] &&
         adaptiveFlux[index] >= adaptiveFlux[index + 2];
-      if (rapidPianoPeak) candidates.push(frame);
+      if (rapidFollowUp) candidates.push(frame);
     }
   }
 
-  return thinByStrength(mergeNearbyFrames(candidates, densePianoMode ? 0.052 : minimumGap));
+  return thinByStrength(mergeNearbyFrames(candidates, minimumGap));
 }
 
 function detectPitch(samples: Float32Array, offset: number): { midi: number; confidence: number } | null {
@@ -477,6 +491,18 @@ export async function analyzeMelody(
   const frames = await buildAnalysisFrames(samples, onProgress);
   onProgress?.(0.5, options.profile === "piano" ? "正在锁定钢琴重音" : "正在筛选同步落点");
   let pulses = selectPulseFrames(frames, options);
+  if (options.profile === "piano") {
+    // A MIDI-rendered piano attack can be obvious in the broad spectrum while
+    // the sustain pedal hides its RMS novelty in the piano-only channel. Keep
+    // every conservative piano onset, then add only independently detected
+    // broad-band transients. This fills omissions without the former relaxed
+    // dense-piano pass, whose threshold could abruptly double the note count.
+    const supportPulses = selectPulseFrames(frames, {
+      profile: "balanced",
+      sensitivity: Math.min(options.sensitivity, 0.82),
+    });
+    pulses = thinByStrength(mergeNearbyFrames([...pulses, ...supportPulses], 0.052));
+  }
   if (pulses.length < 3) pulses = fallbackPulseFrames(frames);
   const peakScore = Math.max(0.001, ...pulses.map((frame) => frame.score || frame.rms));
 
